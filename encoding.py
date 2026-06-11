@@ -25,6 +25,19 @@ class BaseEncoding:
         pass
 
 
+5 nodes
+0/1 2-partition
+3-partition 0/1/2
+[0 1 1 0 0] 2-3 1-4 
+[p1 p2 p3 p4 p5]
+shuffle 
+[p3 p5 p1 p4 p2]
+cut
+[p3 p5 p1 p4 | p2]
+
+
+
+
 class PartitionEncoding(BaseEncoding):
     def __init__(
         self,
@@ -79,6 +92,7 @@ class PartitionEncoding(BaseEncoding):
             duration_min=duration_min,
         )
 
+    height, duration, [0/1]
     def _mutate_self(self):
         def randint_exluding(low, high, cur):
             if low >= high:
@@ -104,6 +118,7 @@ class PartitionEncoding(BaseEncoding):
             self.partition_vector[flip_idx] = 1 - self.partition_vector[flip_idx]
 
     @staticmethod
+    
     def mutate(ind):
         ind._mutate_self()
         return (ind,)
@@ -112,6 +127,9 @@ class PartitionEncoding(BaseEncoding):
         # check they are in same shape, for example:
         assert self.seq_max == other.seq_max
         ...
+        
+    height, duration, [0/1]
+    height, duration, [0/1]
 
         # here is an example, you can design your own crossover operators
         new_vec1 = []
@@ -200,6 +218,40 @@ class PartitionEncoding(BaseEncoding):
             return f"{prefix}{format_scalar(value)}"
 
         return dump_yaml(to_builtin(self))
+
+byzz + partition
+byzz: <round,sender,receiver,msgType> -> method
+partition: [0,1,1,0,0], [1,2,3,4,1]
+
+
+how?
+byzz: <round,sender,receiver,msgType> -> method
+c=2
+ind1 {
+<2,p1,p2,vote> -> changeHash
+<2,p3,p2,propose> -> changeProposal
+<5,p3,p1,propose> -> changeProposal
+}
+ind2 {
+<2,p1,p4,vote> -> changeSeq
+<3,p3,p4,validate> -> changeVal
+<7,p3,p4,validate> -> changeVal
+}
+
+ind1 [A, B, C]  -> rand() idx 2
+ind2 [D, E, F] -> rand() idx 1 
+
+
+
+mutations:
+ind {
+<2,p1,p2,vote> -> changeVote # change method
+# replace 
+# drop hard bound: remove / add
+<5,p3,p1,propose> -> changeProposal
+}
+
+rand() < 0.5: replace else change method
 
 
 class ComposedEncoding(BaseEncoding):
